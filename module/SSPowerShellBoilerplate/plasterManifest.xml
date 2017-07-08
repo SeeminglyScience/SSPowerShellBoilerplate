@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<plasterManifest schemaVersion="1.0" xmlns="http://www.microsoft.com/schemas/PowerShell/Plaster/v1">
+  <metadata>
+    <name>SSPowerShellBoilerplate</name>
+    <id>697e8329-4a19-4d02-b4cf-e5c421e9d84e</id>
+    <version>0.1.0</version>
+    <title>New Open Source PowerShell Project</title>
+    <description>An opinionated boilerplate that creates everything you need to start up a new open source PowerShell project.</description>
+    <author>Patrick Meinecke</author>
+    <tags>Module, PowerShell, C#</tags>
+  </metadata>
+  <parameters>
+    <parameter name='ModuleName'
+               type='text'
+               prompt='Enter the name of the module'/>
+    <parameter name='SourceType'
+               type='multichoice'
+               default='0'
+               prompt='Select the languages that will be utilized in this module'>
+      <choice label='&amp;PowerShell'
+              help='Adds a psm1 file that loads ps1 files placed in the Public or Private directories.'
+              value='PowerShell'/>
+      <choice label='&amp;C#'
+              help='Adds a src folder and scaffolds a basic C# classlib project.'
+              value='CSharp'/>
+    </parameter>
+    <parameter name='GitHubUser'
+               type='text'
+               store='text'
+               prompt='Enter your GitHub user name'/>
+    <parameter name='FullName'
+               type='user-fullname'
+               prompt='Enter your full name'
+               store='text'/>
+    <parameter name='Email'
+               type='user-email'
+               prompt='Enter your public email address'
+               store='text'/>
+  </parameters>
+
+  <content>
+    <file source='_gitignore'
+          destination='.gitignore' />
+
+    <file source='_gitattributes'
+          destination='.gitattributes' />
+
+    <file source=''
+          destination='module\Public'
+          condition="$PLASTER_PARAM_SourceType -contains 'PowerShell'"/>
+
+    <file source=''
+          destination='module\Private'
+          condition="$PLASTER_PARAM_SourceType -contains 'PowerShell'"/>
+
+    <file source='vscode\settings.json'
+          destination='.vscode\settings.json' />
+
+    <file source='PSScriptAnalyzerSettings.psd1'
+          destination='ScriptAnalyzerSettings.psd1' />
+
+    <templateFile source='module\Module.psd1'
+                  destination='module\${PLASTER_PARAM_ModuleName}.psd1'/>
+
+    <templateFile source='LICENSE.txt'
+                  destination='LICENSE'/>
+
+    <templateFile source='doc\CODE_OF_CONDUCT.md'
+                  destination='docs\CODE_OF_CONDUCT.md'/>
+
+    <templateFile source='doc\CONTRIBUTING.md'
+                  destination='docs\CONTRIBUTING.md'/>
+
+    <templateFile source='README_.md'
+                  destination='README.md'/>
+
+    <templateFile source='vscode\tasks.json'
+                  destination='.vscode\tasks.json'/>
+
+    <templateFile source='vscode\launch.json'
+                  destination='.vscode\launch.json'/>
+
+    <templateFile source='vscode\extensions.json'
+                  destination='.vscode\extensions.json'/>
+
+    <templateFile source='Module.build.ps1'
+                  destination='${PLASTER_PARAM_ModuleName}.build.ps1'/>
+
+    <templateFile source='test\Module.T.ps1'
+                  destination='test\${PLASTER_PARAM_ModuleName}.Tests.ps1'/>
+
+    <templateFile source='debugHarness.ps1'
+                  destination='debugHarness.ps1' />
+
+    <templateFile source='module\Module.psm1'
+                  destination='module\${PLASTER_PARAM_ModuleName}.psm1'
+                  condition="$PLASTER_PARAM_SourceType -contains 'PowerShell'"/>
+
+    <templateFile source='src\Module.sln'
+                  destination='${PLASTER_PARAM_ModuleName}.sln'
+                  condition="$PLASTER_PARAM_SourceType -contains 'CSharp'"/>
+
+    <templateFile source='src\Module.csproj'
+                  destination='src\${PLASTER_PARAM_ModuleName}\${PLASTER_PARAM_ModuleName}.csproj'
+                  condition="$PLASTER_PARAM_SourceType -contains 'CSharp'"/>
+
+    <templateFile source='src\Module.ruleset'
+                  destination='src\${PLASTER_PARAM_ModuleName}\${PLASTER_PARAM_ModuleName}.ruleset'
+                  condition="$PLASTER_PARAM_SourceType -contains 'CSharp'"/>
+
+    <file source='src\stylecop.json'
+          destination='src\${PLASTER_PARAM_ModuleName}\stylecop.json'
+          condition="$PLASTER_PARAM_SourceType -contains 'CSharp'"/>
+
+
+    <requireModule name="InvokeBuild"
+                   message="Without InvokeBuild you will be unable to run any build tasks."/>
+    <requireModule name="PSScriptAnalyzer"
+                   message="Without PSScriptAnalyzer you will be unable to analyze PowerShell scripts for rule violations."/>
+    <requireModule name="PlatyPS"
+                   message="Without PlatyPS you won't be able to create markdown or external help files"/>
+    <requireModule name="Pester"
+                   minimumVersion="3.4.0"
+                   message="Without Pester, you will not be able to run the provided Pester test to validate your module manifest file.`nWithout version 3.4.0, VS Code will not display Pester warnings and errors in the Problems panel."/>
+  </content>
+</plasterManifest>

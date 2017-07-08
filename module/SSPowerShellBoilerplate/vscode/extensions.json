@@ -1,0 +1,17 @@
+{
+    // See http://go.microsoft.com/fwlink/?LinkId=827846
+    // for the documentation about the extensions.json format
+    "recommendations": [
+<%
+$result = @()
+if ($PLASTER_PARAM_SourceType -contains 'PowerShell') {
+    $result += '        "ms-vscode.PowerShell"'
+}
+
+if ($PLASTER_PARAM_SourceType -contains 'CSharp') {
+    $result += '        "ms-vscode.csharp"'
+}
+$result -join ",`n"
+%>
+    ]
+}
